@@ -1,7 +1,33 @@
-# This is just an example to get you started. A typical hybrid package
-# uses this file as the main entry point of the application.
+let doc = """
+Misc Utility.
 
-import miscutilspkg/submodule
+Usage:
+  mu execit parse (objdump|size|report) [<filename>]
+  mu ship <name> move <x> <y> [--speed=<kn>]
+  mu ship shoot <x> <y>
+  mu mine (set|remove) <x> <y> [--moored | --drifting]
+  mu (-h | --help)
+  mu --version
 
-when isMainModule:
-  echo(getWelcomeMessage())
+Options:
+  -h --help     Show this screen.
+  --version     Show version.
+  --speed=<kn>  Speed in knots [default: 10].
+  --moored      Moored (anchored) mine.
+  --drifting    Drifting mine.
+"""
+
+import miscutilspkg/execit as execit
+import tables
+import docopt
+
+let
+  args = docopt(doc, version = "Misc Utility 0.1.0")
+  subcmd = {
+    "execit": execit.command,
+    }.toTable
+
+for cmd, fun in subcmd:
+  if args[cmd]:
+    discard fun(args)
+    break
