@@ -89,12 +89,12 @@ proc parse_report(args: Table[string, Value]): bool =
   if filename and not open(file, $filename):
     return false
 
-#[
-Parse size <dat/psnr.nds.size> ...
-   option        code     reduction(%)   delta(%)  
-lld-Os0-bfd      50840         0.00         0.00   
-lld-Os1-bfd      44520       -12.43       -12.43   
-]#
+  #[
+    Parse size <dat/psnr.nds.size> ...
+    option        code     reduction(%)   delta(%)  
+    lld-Os0-bfd      50840         0.00         0.00   
+    lld-Os1-bfd      44520       -12.43       -12.43   
+  ]#
 
   let filename_str = if filename: $filename else: "stdin"
   echo &"""Parse report <{filename_str}> ..."""
@@ -183,11 +183,110 @@ lld-Os1-bfd      44520       -12.43       -12.43
 
   true
 
+
+type
+  Kind = object
+    matches, count: int
+  Itable = object
+    entries, icount: int
+    classes: array[4, Kind]
+  Remain = object
+    itable: Itable
+    entries, icount: int
+    name: string
+  RemainRef = ref Remain
+
+proc `+=`(a: var array[4, Kind], b: array[4, Kind]) =
+  for i in 0 ..< 4:
+    a[i].matches += b[i].matches
+    a[i].count += b[i].count
+
+proc `div`(a: array[4, Kind], b: int): array[4, Kind] =
+  for i in 0 ..< 4:
+    result[i].matches = a[i].matches div b
+    result[i].count = a[i].count div b
+
+proc `+=`(a: var Remain, b: Remain) =
+  a.itable.entries += b.itable.entries
+  a.itable.icount += b.itable.icount
+  a.itable.classes += b.itable.classes
+  a.entries += b.entries
+  a.icount += b.icount
+
+proc `div`(a: Remain, b: int): Remain =
+  result.itable.entries = a.itable.entries div b
+  result.itable.icount = a.itable.icount div b
+  result.itable.classes = a.itable.classes div b
+  result.entries = a.entries div b
+  result.icount = a.icount div b
+
+proc parse_remain(args: Table[string, Value]): bool =
+  let filename = args["<filename>"]
+  var file = stdin
+  if filename and not open(file, $filename):
+    return false
+
+  #[
+    rsa.nds
+    bfd-Os_-bfd
+    itable entries = 403, insn count = 2428
+    entry class/counts = [0, 3, 0, 400] [0, 3, 0, 2428]
+    Remain: itable entries = 66, insn count = 269
+  ]#
+
+  let filename_str = if filename: $filename else: "stdin"
+  echo &"""Parse remain <{filename_str}> ..."""
+  var
+    tab = initOrderedTable[string, RemainRef]()
+    avg = Remain()
+    cur, max: RemainRef
+    name = ""
+    files = 0
+  try:
+    for line in file.lines:
+      if line =~ peg"^ {\w+ '.nds'}":
+        name = matches[0]
+        files.inc
+        tab[name] = RemainRef(name: name)
+        cur = tab[name]
+        if max == nil: max = cur
+      elif line =~ peg"^ ('bfd' / 'lld') .+":
+        discard
+      elif line =~ peg"^ 'itable' @'= ' {\d+} ',' @'= ' {\d+}":
+        cur.itable.entries = matches[0].parseInt
+        cur.itable.icount = matches[1].parseInt
+      elif line =~ peg"^ 'entry' @'= ' '[' {@} ']' \s+ '[' {@} ']'":
+        let class = matches[0]
+        let count = matches[1]
+        discard class =~ peg"{\d+} ', ' {\d+} ', ' {\d+} ', ' {\d+}"
+        for i in 0 ..< 4:
+          cur.itable.classes[i].matches = matches[i].parseInt
+        discard count =~ peg"{\d+} ', ' {\d+} ', ' {\d+} ', ' {\d+}"
+        for i in 0 ..< 4:
+          cur.itable.classes[i].count = matches[i].parseInt
+      elif line =~ peg"^ 'Remain:' @'= ' {\d+} ',' @'= ' {\d+}":
+        cur.entries = matches[0].parseInt
+        cur.icount = matches[1].parseInt
+        avg += cur[]
+        if max.icount < cur.icount: max = cur
+  except:
+    echo getCurrentExceptionMsg()
+
+  # report
+  for k, v in tab:
+    echo k, v[]
+  avg = avg div files
+  echo "avg:", avg
+  echo "max:", max[]
+
+  true
+
 let
   subcmd = {
     "objdump": parse_objdump,
     "size": parse_size,
     "report": parse_report,
+    "remain": parse_remain,
     }.toTable
 
 proc command*(args: Table[string, Value]): bool =
