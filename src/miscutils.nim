@@ -3,7 +3,7 @@ Misc Utility.
 
 Usage:
   mu execit parse (objdump|size|report|remain) [<filename>]
-  mu ship <name> move <x> <y> [--speed=<kn>]
+  mu test docopt option [<name>]
   mu ship shoot <x> <y>
   mu mine (set|remove) <x> <y> [--moored | --drifting]
   mu (-h | --help)
@@ -18,13 +18,15 @@ Options:
 """
 
 import miscutilspkg/execit as execit
-import tables
+import miscutilspkg/test as test
 import docopt
+import tables
 
 let
   args = docopt(doc, version = "Misc Utility 0.1.0")
   subcmd = {
     "execit": execit.command,
+    "test": test.command,
     }.toTable
 
 for cmd, fun in subcmd:

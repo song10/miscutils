@@ -3,6 +3,7 @@ import strformat
 import pegs
 import tables
 import strutils
+import execit/parse/objdump as objdump
 
 proc parse_objdump(args: Table[string, Value]): bool =
   if not args["<filename>"]:
@@ -283,7 +284,7 @@ proc parse_remain(args: Table[string, Value]): bool =
 
 let
   subcmd = {
-    "objdump": parse_objdump,
+    "objdump": objdump.parse,
     "size": parse_size,
     "report": parse_report,
     "remain": parse_remain,
