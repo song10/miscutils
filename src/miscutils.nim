@@ -2,7 +2,7 @@ let doc = """
 Misc Utility.
 
 Usage:
-  mu execit parse (objdump|size|report|remain) [<filename>]
+  mu execit parse (objdump|size|report|remain|rank) [<filename>] [--limit=LIMIT]
   mu test docopt option [<name>]
   mu ship shoot <x> <y>
   mu mine (set|remove) <x> <y> [--moored | --drifting]

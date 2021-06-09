@@ -4,13 +4,7 @@ import pegs
 import tables
 import strutils
 import execit/parse/objdump as objdump
-
-proc parse_objdump(args: Table[string, Value]): bool =
-  if not args["<filename>"]:
-    return false
-
-  echo &"""Parse objdump <{args["<filename>"]}> ..."""
-  true
+import execit/parse/rank as rank
 
 type
   Cosz = tuple
@@ -285,6 +279,7 @@ proc parse_remain(args: Table[string, Value]): bool =
 let
   subcmd = {
     "objdump": objdump.parse,
+    "rank": rank.parse,
     "size": parse_size,
     "report": parse_report,
     "remain": parse_remain,

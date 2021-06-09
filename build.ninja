@@ -5,6 +5,7 @@ build src/miscutils: nimcc src/miscutils.nim | $
                       src/miscutilspkg/execit.nim $
                       src/miscutilspkg/execit/parse.nim $
                       src/miscutilspkg/execit/parse/objdump.nim $
+                      src/miscutilspkg/execit/parse/rank.nim $
                       src/miscutilspkg/test.nim $
                       src/miscutilspkg/test/docopt_test.nim
 
