@@ -1,11 +1,10 @@
-import execit/parse as parse
-import execit/compare as compare
+import execit/compare/rank as rank
 import docopt
+import tables
 
 let
   subcmd = {
-    "parse": parse.command,
-    "compare": compare.command,
+    "rank": rank.compare,
     }.toTable
 
 proc command*(args: Table[string, Value]): bool =

@@ -2,12 +2,13 @@ let doc = """
 Misc Utility.
 
 Usage:
-  mu execit parse (objdump|size|report|remain|rank) [<filename>] [--limit=LIMIT]
-  mu test docopt option [<name>]
-  mu ship shoot <x> <y>
-  mu mine (set|remove) <x> <y> [--moored | --drifting]
-  mu (-h | --help)
-  mu --version
+  miscutils execit (parse|compare) (objdump|size|report|remain|rank) [<filename>] [<filenameB>] [--limit=LIMIT]
+  miscutils binutils parse opcode [<filename>]
+  miscutils test docopt option [<name>]
+  miscutils ship shoot <x> <y>
+  miscutils mine (set|remove) <x> <y> [--moored | --drifting]
+  miscutils (-h | --help)
+  miscutils --version
 
 Options:
   -h --help     Show this screen.
@@ -19,6 +20,7 @@ Options:
 
 import miscutilspkg/execit as execit
 import miscutilspkg/test as test
+import miscutilspkg/binutils as binutils
 import docopt
 import tables
 
@@ -27,6 +29,7 @@ let
   subcmd = {
     "execit": execit.command,
     "test": test.command,
+    "binutils": binutils.command,
     }.toTable
 
 for cmd, fun in subcmd:

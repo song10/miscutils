@@ -114,7 +114,7 @@ proc parse_report(args: Table[string, Value]): bool =
           tab[opt] += perf
         else:
           tab[opt] = perf
-        
+
         # min/max
         case opt:
         of "lld-Os_-bfd":

@@ -6,8 +6,13 @@ build src/miscutils: nimcc src/miscutils.nim | $
                       src/miscutilspkg/execit/parse.nim $
                       src/miscutilspkg/execit/parse/objdump.nim $
                       src/miscutilspkg/execit/parse/rank.nim $
+                      src/miscutilspkg/execit/compare.nim $
+                      src/miscutilspkg/execit/compare/rank.nim $
                       src/miscutilspkg/test.nim $
-                      src/miscutilspkg/test/docopt_test.nim
+                      src/miscutilspkg/test/docopt_test.nim $
+                      src/miscutilspkg/binutils.nim $
+                      src/miscutilspkg/binutils/parse.nim $
+                      src/miscutilspkg/binutils/parse/opcode.nim
 
 build miscutils: phony src/miscutils
 

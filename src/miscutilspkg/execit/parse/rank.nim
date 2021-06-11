@@ -12,7 +12,7 @@ proc parse*(args: Table[string, Value]): bool =
     if filename and not open(file, $filename):
       return false
 
-    let 
+    let
       module_name = currentSourcePath().splitfile().name
       filename_str = if filename: $filename else: "stdin"
     echo &"""Parse {module_name} <{filename_str}> ..."""
