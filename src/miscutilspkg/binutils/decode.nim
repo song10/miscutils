@@ -1,11 +1,10 @@
-import binutils/parse as parse
-import binutils/decode as decode
+import binutils/decode/rank as rank
 import docopt
+import tables
 
 let
   subcmd = {
-    "parse": parse.command,
-    "decode": decode.command,
+    "decode": rank.decode,
     }.toTable
 
 proc command*(args: Table[string, Value]): bool =

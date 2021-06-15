@@ -46,7 +46,10 @@ proc parse*(args: Table[string, Value]): bool =
         of "MASK": tab[key].mask = va
         else: echo &"Prefix <{atr}> not supported!"
   except:
-    echo getCurrentExceptionMsg()
+    let
+      e = getCurrentException()
+      msg = getCurrentExceptionMsg()
+    echo "Got exception ", repr(e), " with message ", msg
 
   # report
   let

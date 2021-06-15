@@ -3,7 +3,7 @@ Misc Utility.
 
 Usage:
   miscutils execit (parse|compare) (objdump|size|report|remain|rank) [<filename>] [<filenameB>] [--limit=LIMIT]
-  miscutils binutils parse opcode [<filename>]
+  miscutils binutils (parse|decode) (opcode|rank) [<filename>]
   miscutils test docopt option [<name>]
   miscutils ship shoot <x> <y>
   miscutils mine (set|remove) <x> <y> [--moored | --drifting]
