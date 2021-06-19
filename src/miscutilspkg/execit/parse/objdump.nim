@@ -72,9 +72,12 @@ proc parse*(args: Table[string, Value]): bool =
     count.inc(k, v.len)
   count.sort()
   var limit = 20
+  var threshold = 3
   if args["--limit"]: limit = parseInt($args["--limit"])
+  if args["--threshold"]: threshold = parseInt($args["--threshold"])
   try:
     for k, v in count:
+      if v < threshold: continue
       echo &"{k:>16}: {v:>4}   {tab[k][0].dis}"
       limit.dec
       if limit == 0: break
