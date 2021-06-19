@@ -1,28 +1,10 @@
+import bits
 import docopt
 import os
 import pegs
 import strformat
 import strutils
 import tables
-
-type Field = tuple
-  bit, len: int
-
-proc extract(bits: seq[Field], shift, num: int, signed = true): int =
-  result = 0
-  var bc = 0
-  for x in bits:
-    let
-      mask = not -(1 shl x.len)
-      field = (num shr x.bit) and mask
-    result = result or (field shl bc)
-    bc.inc(x.len)
-  if signed and bc > 0:
-    let msb = result shr (bc - 1)
-    if msb != 0:
-      let m = (not result) shr bc shl bc
-      result = result or m
-  result = result shl shift
 
 proc parse*(args: Table[string, Value]): bool =
   var file = stdin
@@ -54,7 +36,7 @@ proc parse*(args: Table[string, Value]): bool =
         hi11 = tpc shr 21 shl 21
         hi11p = x.adr shr 21 shl 21
         mark = if (hi11 == hi11p): 'V' else: 'X'
-      result = &"{tpc:08x}|{x.ins and 0xfff:03x}|{mark}"
+      result = &"{tpc:08x}|{x.ins and MASK_JAL_RD:03x}|{mark}"
     else:
       result = code
 

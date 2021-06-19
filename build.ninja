@@ -2,6 +2,7 @@ rule nimcc
   command = nim c -o:$out -r $in
 
 build src/miscutils: nimcc src/miscutils.nim | $
+                      src/miscutilspkg/bits.nim $
                       src/miscutilspkg/execit.nim $
                       src/miscutilspkg/execit/parse.nim $
                       src/miscutilspkg/execit/parse/objdump.nim $

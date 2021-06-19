@@ -1,3 +1,4 @@
+import bits
 import strformat
 
 type
@@ -1564,29 +1565,37 @@ let tab: seq[Insn] = @[
 
 let
   gpr = [
-    "zero", "ra", "sp", "gp", "tp", "t0", "t1", "t2", 
+    "zero", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
     "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7",
-    "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11", 
+    "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11",
     "t3", "t4", "t5", "t6",
   ]
 
-proc mask(a, b:int):int64=
+proc mask(a, b: int): int64 =
   result = ((1 shl (a - b + 1)) - 1) shl b
 
-proc u_type(code: int64): string=
+proc j_type(code: int64): string =
+  let
+    rd = code.bitsliced(7 .. 11)
+    imm = extract(@[(21, 10), (20, 1), (12, 8), (31, 1)], 1.int, code.int)
+  result = &"{gpr[rd]}, 0x{imm:x}"
+
+proc u_type(code: int64): string =
   let
     rd_mask = mask(11, 7)
     imm_mask = mask(31, 12)
     rd = (code and rd_mask) shr 7
     imm = (code and imm_mask)
-  result = &"{gpr[rd]}, #0x{imm:08x}"
-  
+  result = &"{gpr[rd]}, 0x{imm:08x}"
+
 proc decode*(code: int64): string =
   result = "?"
   for x in tab:
     if (code and x.mask) == x.match:
       result = x.mne
       case x.mne:
+      of "JAL":
+        result = &"{x.mne} {j_type(code)}"
       of "LUI":
         result = &"{x.mne} {u_type(code)}"
       else:
