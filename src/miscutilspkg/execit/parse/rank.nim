@@ -51,7 +51,7 @@ proc parse*(args: Table[string, Value]): bool =
   count.sort()
   for k, v in count:
     if v < threshold: continue
-    echo &"[{v:>4}] {k:>32}"
+    echo &"[{v:>4}] ={k:32}"
     limit.dec
     if limit == 0: break
 

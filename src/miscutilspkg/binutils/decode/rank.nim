@@ -21,10 +21,13 @@ proc decode*(args: Table[string, Value]): bool =
   #[
     rank: [  33] hash=000005b7|00000000|00000000|=
     rank: [   1] hash=000805b7|00000000|00000000|-
+    # or
+    [   3]     =00f92023|00000000|00000000|-                                                                            │
+    [   3]     =001a8413|00000000|00000000|-                                                                            │
   ]#
   try:
     for line in file.lines:
-      if line =~ peg"^ 'rank:' @ '=' {\w+} '|'":
+      if line =~ peg"^ 'rank:'? @ '=' {\w+} '|'":
         let
           insn = matches[0].parseHexInt
           dis = opcode.decode(insn)
