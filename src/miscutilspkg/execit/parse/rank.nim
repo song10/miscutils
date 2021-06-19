@@ -40,14 +40,17 @@ proc parse*(args: Table[string, Value]): bool =
     echo getCurrentExceptionMsg()
 
   # report
-  var limit = 20
+  var
+    limit = 20
+    threshold = 3
   if args["--limit"]: limit = parseInt($args["--limit"])
+  if args["--threshold"]: threshold = parseInt($args["--threshold"])
   var count = initCountTable[string]()
   for k, v in tab:
     count.inc(k, v.cnt)
   count.sort()
   for k, v in count:
-    if v < 4: continue
+    if v < threshold: continue
     echo &"[{v:>4}] {k:>32}"
     limit.dec
     if limit == 0: break

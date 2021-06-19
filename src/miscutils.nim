@@ -2,7 +2,7 @@ let doc = """
 Misc Utility.
 
 Usage:
-  miscutils execit (parse|compare) (objdump|size|report|remain|rank) [<filename>] [<filenameB>] [--limit=LIMIT]
+  miscutils execit (parse|compare) (objdump|size|report|remain|rank) [<filename>] [<filenameB>] [--limit=LIMIT] [--threshold=LIMIT]
   miscutils binutils (parse|decode) (opcode|rank) [<filename>]
   miscutils test docopt option [<name>]
   miscutils ship shoot <x> <y>
